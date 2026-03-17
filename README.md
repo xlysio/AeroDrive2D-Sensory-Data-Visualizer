@@ -10,6 +10,7 @@ The system discards traditional gamepads in favor of a custom spherical controll
     Acceleration (Speed): Controlled contactlessly by the vertical distance of the user's hand from a VL53L0X Time-of-Flight (ToF) laser sensor. The closer the hand, the faster the car goes.
 
 The objective is simple: complete a 5-lap time trial as fast as possible.
+
 ⚙️ Key Technical Features
 
     Real-Time Telemetry: Live plotting of incoming sensor data (distance and tilt angle) using Qt Charts (strip chart format).

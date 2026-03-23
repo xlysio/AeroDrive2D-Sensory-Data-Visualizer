@@ -5,14 +5,14 @@ AeroDrive2D is an interactive 2D racing game driven by a custom-built, gesture-b
 
 The system discards traditional gamepads in favor of a custom spherical controller resting on a desk, operated with both hands:
 
-    Steering (Left/Right): Achieved by physically tilting the spherical base. The tilt angle is calculated using the built-in IMU (Gyroscope/Accelerometer) of the Arduino Nano 33 IoT.
+    Steering (Left/Right): Achieved by physically tilting the controller. The tilt angle is calculated using the built-in IMU (Gyroscope/Accelerometer) of the Arduino Nano 33 IoT.
 
-    Acceleration (Speed): Controlled contactlessly by the vertical distance of the user's hand from a VL53L0X Time-of-Flight (ToF) laser sensor. The closer the hand, the faster the car goes.
+    Acceleration (Speed): Controlled contactlessly by the vertical distance of the desk from a VL53L0X Time-of-Flight (ToF) laser sensor. The closer the conotroller is to the desk, the faster the car goes.
 
 The objective is simple: complete a 5-lap time trial as fast as possible.
 
 ⚙️ Key Technical Features
-
+S
     Real-Time Telemetry: Live plotting of incoming sensor data (distance and tilt angle) using Qt Charts (strip chart format).
 
     Robust Serial Communication: Seamless data parsing from the microcontroller via a virtual COM port over USB (QSerialPort).

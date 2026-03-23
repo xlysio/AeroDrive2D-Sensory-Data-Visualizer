@@ -25,6 +25,6 @@ The objective is simple: complete a 5-lap time trial as fast as possible.
 
 🛠️ Tech Stack
 
-    Hardware: Arduino Nano 33 IoT, VL53L0X (Pololu), Custom 3D-printed spherical base (Autodesk Fusion).
+    Hardware: Arduino Nano 33 IoT, VL53L0X (Pololu), Custom 3D-printed controller (Autodesk Fusion).
 
     Software: C++17, Qt Framework (QtWidgets, Qt Charts, Qt SerialPort), Arduino IDE, CMake.

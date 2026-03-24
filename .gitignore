@@ -6,7 +6,7 @@ Thumbs.db
 .vscode/
 .idea/
 
-# 2. Qt Application (C++ on PC)
+# 2. Qt Application 
 # Ignore build output directories 
 build-*/
 software/pc_application/build/
@@ -38,14 +38,14 @@ software/mcu_firmware/build/
 *.bin
 *.epp
 
-# 4. Documentation Doxygen
-# Push only the "Doxyfile" to GitHub, ignore Doxygen generated output (HTML/LaTeX)
+# 4. Documentation - Doxygen
+# Ignore Doxygen generated output - HTML/LaTeX
 docs/doxygen_mcu/html/
 docs/doxygen_mcu/latex/
 docs/doxygen_pc/html/
 docs/doxygen_pc/latex/
 
-# 5. Electronics KiCad 
+# 5. Electronics - KiCad 
 # KiCad backups 
 *-backups/
 *.bck
@@ -55,7 +55,7 @@ docs/doxygen_pc/latex/
 _autosave-*
 fp-info-cache
 
-# 6. Mechanics and CAD (Fusion 360)
+# 6. Mechanics and CAD - Fusion 360
 # Ignore temporary lock files
 *.lck
 *.bak

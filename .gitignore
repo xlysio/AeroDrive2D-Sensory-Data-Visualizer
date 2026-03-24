@@ -1,0 +1,61 @@
+# 1. Operating system and editor files
+.DS_Store
+Thumbs.db
+*~
+*.swp
+.vscode/
+.idea/
+
+# 2. Qt Application (C++ on PC)
+# Ignore build output directories 
+build-*/
+software/pc_application/build/
+software/pc_application/bin/
+
+# Ignore object and binary files
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.a
+
+# Qt Creator local user configurations 
+*.user
+*.user.*
+.qmake.stash
+CMakeCache.txt
+CMakeFiles/
+CMakeLists.txt.user
+
+# 3. Arduino and microcontroller
+# Build directories 
+software/mcu_firmware/build/
+
+# Compiled firmware binaries
+*.elf
+*.hex
+*.bin
+*.epp
+
+# 4. Documentation Doxygen
+# Push only the "Doxyfile" to GitHub, ignore Doxygen generated output (HTML/LaTeX)
+docs/doxygen_mcu/html/
+docs/doxygen_mcu/latex/
+docs/doxygen_pc/html/
+docs/doxygen_pc/latex/
+
+# 5. Electronics KiCad 
+# KiCad backups 
+*-backups/
+*.bck
+*.kicad_pcb-bak
+*.kicad_sch-bak
+*.sch-bak
+_autosave-*
+fp-info-cache
+
+# 6. Mechanics and CAD (Fusion 360)
+# Ignore temporary lock files
+*.lck
+*.bak

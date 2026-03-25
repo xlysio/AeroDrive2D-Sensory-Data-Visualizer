@@ -1,0 +1,4 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "arduino_nano_33_iot") (type "KiCad") (uri "${KIPRJMOD}/libs/ABX00027") (options "") (descr ""))
+)

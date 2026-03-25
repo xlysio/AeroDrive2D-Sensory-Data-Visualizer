@@ -6,6 +6,9 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Trash from Windows and nested repositories
+.history/
+
 # 2. Qt Application 
 # Ignore build output directories 
 build-*/

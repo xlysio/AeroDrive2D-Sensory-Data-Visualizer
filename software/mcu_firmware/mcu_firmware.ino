@@ -1,6 +1,10 @@
 #include <Arduino_LSM6DS3.h>
 #include "Adafruit_VL53L0X.h"
 #include <math.h>
+#include <avr/dtostrf.h>
+
+#define BUFF_SIZE_BIG 100
+#define BUFF_SIZE_SMALL 20
 
 // For NANO 33 IoT:
 // - VIN to VIN
@@ -25,6 +29,9 @@ unsigned long previous_time = 0;
 uint16_t measured_distance;
 const float alpha = 0.96;
 VL53L0X_RangingMeasurementData_t measure;
+char output[BUFF_SIZE_BIG];
+char buffer_distance[BUFF_SIZE_SMALL];
+char buffer_angle[BUFF_SIZE_SMALL];
 
 void setup() 
 {
@@ -84,22 +91,8 @@ void loop()
     real_distance = 500.0;
   }
   
-  Serial.print("acc_deg = ");
-  Serial.print(acc_deg);
-  Serial.print("    ");
-
-  Serial.print("gyro_deg = ");
-  Serial.print(gyro_deg);
-  Serial.print("    ");
-
-  Serial.print("angle_deg = ");
-  Serial.print(angle_deg);
-  Serial.print("    ");
-
-  Serial.print("measured_distance = ");
-  Serial.print(measured_distance);
-  Serial.print("    ");
-
-  Serial.print("real_distance = ");
-  Serial.println(real_distance);
+  dtostrf(real_distance, 1, 2, buffer_distance);
+  dtostrf(angle_deg, 1, 2, buffer_angle);
+  sprintf(output, "$AD,%s,%s\n", buffer_distance, buffer_angle);
+  Serial.print(output);
 }

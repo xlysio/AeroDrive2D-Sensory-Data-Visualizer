@@ -31,6 +31,12 @@ CMakeCache.txt
 CMakeFiles/
 CMakeLists.txt.user
 
+# Qt auto-generated source files
+moc_*
+qrc_*
+ui_*
+*.pro.user*
+
 # 3. Arduino and microcontroller
 # Build directories 
 software/mcu_firmware/build/

@@ -3,8 +3,7 @@
 #include <math.h>
 #include <avr/dtostrf.h>
 
-#define BUFF_SIZE_BIG 100
-#define BUFF_SIZE_SMALL 20
+#define BUFF_SIZE 10
 
 // For NANO 33 IoT:
 // - VIN to VIN
@@ -29,9 +28,7 @@ unsigned long previous_time = 0;
 uint16_t measured_distance;
 const float alpha = 0.96;
 VL53L0X_RangingMeasurementData_t measure;
-char output[BUFF_SIZE_BIG];
-char buffer_distance[BUFF_SIZE_SMALL];
-char buffer_angle[BUFF_SIZE_SMALL];
+char output[BUFF_SIZE];
 
 void setup() 
 {
@@ -91,8 +88,14 @@ void loop()
     real_distance = 500.0;
   }
   
-  dtostrf(real_distance, 1, 2, buffer_distance);
-  dtostrf(angle_deg, 1, 2, buffer_angle);
-  sprintf(output, "$AD,%s,%s\n", buffer_distance, buffer_angle);
-  Serial.print(output);
+  Serial.print("$AD,");
+  Serial.print(measured_distance);
+  Serial.print(",");
+  Serial.print(dtostrf(real_distance, 1, 2, output));
+  Serial.print(",");
+  Serial.print(dtostrf(acc_deg, 1, 2, output));
+  Serial.print(",");
+  Serial.print(dtostrf(gyro_deg, 1, 2, output));
+  Serial.print(",");
+  Serial.println(dtostrf(angle_deg, 1, 2, output));
 }

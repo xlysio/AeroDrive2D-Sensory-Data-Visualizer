@@ -10,7 +10,6 @@ qt_add_executable(pc_application
     main.cpp
     mainwindow.cpp
     mainwindow.h
-    mainwindow.ui
 )
 
 target_link_libraries(pc_application

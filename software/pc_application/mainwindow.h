@@ -2,12 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QWidget>
 
 class MainWindow : public QMainWindow
 {
@@ -18,6 +17,20 @@ public:
     ~MainWindow() override;
 
 private:
-    Ui::MainWindow *ui;
+    QLabel *labelGame;
+    QPushButton *buttonGameStartRestart;
+    bool buttonGameStartRestartState;
+
+    QLabel *labelCharts;
+    QPushButton *buttonChartsClear;
+    QPushButton *buttonChartsStopResume;
+    bool buttonChartsStopResumeState;
+
+private slots:
+    void onGameStartRestartClicked();
+    void onChartsStopResumeClicked();
+    void onChartsClearClicked();
+
 };
+
 #endif // MAINWINDOW_H

@@ -7,6 +7,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     setMinimumSize(800, 400);
     setWindowTitle("AeroDrive2D");
 
+    serialHandler = new SerialHandler(this);
+    serialHandler->openPort("/dev/ttyACM0");
+
     QWidget *widgetWindow = new QWidget(this);
     setCentralWidget(widgetWindow);
     QHBoxLayout *layoutWindow = new QHBoxLayout(widgetWindow);
@@ -45,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     connect(buttonGameStartRestart, &QPushButton::clicked, this, &MainWindow::onGameStartRestartClicked);
     connect(buttonChartsClear, &QPushButton::clicked, this, &MainWindow::onChartsClearClicked);
     connect(buttonChartsStopResume, &QPushButton::clicked, this, &MainWindow::onChartsStopResumeClicked);
+    connect(serialHandler, &SerialHandler::dataReceived, this, &MainWindow::onSerialDataReceived);
 }
 
 MainWindow::~MainWindow()
@@ -87,3 +91,22 @@ void MainWindow::onChartsClearClicked()
 {
     qDebug() << "Clear clicked";
 }
+
+void MainWindow::onSerialDataReceived(float measuredDist, float realDist, float accDeg, float gyroDeg, float angleDeg)
+{
+    qDebug() << measuredDist << ", " << realDist << ", " << accDeg << ", " << gyroDeg << ", " << angleDeg;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

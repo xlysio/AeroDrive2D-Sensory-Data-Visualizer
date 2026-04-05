@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QWidget>
+#include "serialhandler.h"
 
 class MainWindow : public QMainWindow
 {
@@ -25,12 +26,14 @@ private:
     QPushButton *buttonChartsClear;
     QPushButton *buttonChartsStopResume;
     bool buttonChartsStopResumeState;
+    \
+    SerialHandler *serialHandler;
 
 private slots:
     void onGameStartRestartClicked();
     void onChartsStopResumeClicked();
     void onChartsClearClicked();
-
+    void onSerialDataReceived(float measuredDist, float realDist, float accDeg, float gyroDeg, float angleDeg);
 };
 
 #endif // MAINWINDOW_H

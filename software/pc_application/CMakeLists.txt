@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(pc_application LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets SerialPort)
 
 qt_standard_project_setup()
 
@@ -10,12 +10,15 @@ qt_add_executable(pc_application
     main.cpp
     mainwindow.cpp
     mainwindow.h
+    serialhandler.h
+    serialhandler.cpp
 )
 
 target_link_libraries(pc_application
     PRIVATE
         Qt::Core
         Qt::Widgets
+        Qt::SerialPort
 )
 
 install(TARGETS pc_application

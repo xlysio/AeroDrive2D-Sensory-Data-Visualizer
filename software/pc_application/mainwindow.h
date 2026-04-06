@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QWidget>
 #include "serialhandler.h"
+#include "chartwidget.h"
 
 class MainWindow : public QMainWindow
 {
@@ -22,11 +23,12 @@ private:
     QPushButton *buttonGameStartRestart;
     bool buttonGameStartRestartState;
 
-    QLabel *labelCharts;
+    ChartWidget *distanceChart;
+    ChartWidget *angleChart;
     QPushButton *buttonChartsClear;
     QPushButton *buttonChartsStopResume;
     bool buttonChartsStopResumeState;
-    \
+
     SerialHandler *serialHandler;
 
 private slots:

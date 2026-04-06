@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(pc_application LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets SerialPort)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets SerialPort Charts)
 
 qt_standard_project_setup()
 
@@ -12,6 +12,8 @@ qt_add_executable(pc_application
     mainwindow.h
     serialhandler.h
     serialhandler.cpp
+    chartwidget.h
+    chartwidget.cpp
 )
 
 target_link_libraries(pc_application
@@ -19,6 +21,7 @@ target_link_libraries(pc_application
         Qt::Core
         Qt::Widgets
         Qt::SerialPort
+        Qt6::Charts
 )
 
 install(TARGETS pc_application

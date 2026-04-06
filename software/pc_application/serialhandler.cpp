@@ -18,7 +18,7 @@ SerialHandler::~SerialHandler()
 
 }
 
-bool SerialHandler::openPort(QString portName)
+bool SerialHandler::openPort(const QString &portName)
 {
     serial->setPortName(portName);
 

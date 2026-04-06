@@ -12,7 +12,7 @@ class SerialHandler: public QObject
 public:
     SerialHandler(QObject *parent = nullptr);
     ~SerialHandler();
-    bool openPort(QString portName);
+    bool openPort(const QString &portName);
     bool closePort();
 
 private:

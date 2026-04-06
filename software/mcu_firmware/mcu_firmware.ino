@@ -78,13 +78,14 @@ void loop()
 
   sensor.rangingTest(&measure, false);
 
-  if (measure.RangeStatus != 4) 
+  if (measure.RangeStatus != 4 && measure.RangeMilliMeter < 500) 
   {  
     measured_distance = measure.RangeMilliMeter;
     real_distance = float(measured_distance * cos(angle_rad));
   } 
   else 
   {
+    measured_distance = 500.0;
     real_distance = 500.0;
   }
   

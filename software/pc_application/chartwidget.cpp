@@ -11,7 +11,7 @@ ChartWidget::ChartWidget(const QString &chartName, const QString &yAxisName,floa
     chart->legend()->setAlignment(Qt::AlignBottom);
 
     xAxis = new QValueAxis();
-    xAxis->setTitleText("Time [s]");
+    xAxis->setTitleText("t [s]");
     xAxis->setMin(0);
     xAxis->setMax(timeWindow);
     chart->addAxis(xAxis, Qt::AlignBottom);

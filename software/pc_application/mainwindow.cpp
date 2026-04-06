@@ -29,11 +29,11 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     QVBoxLayout *layoutCharts = new QVBoxLayout();
     QHBoxLayout *layoutChartsButtons = new QHBoxLayout();
 
-    distanceChart = new ChartWidget("Distance", "d", 0.0, 500.0, this);
+    distanceChart = new ChartWidget("Distance", "d [mm]", 0.0, 500.0, this);
     distanceChart->addSeries("Measured", Qt::red);
     distanceChart->addSeries("Compensated", Qt::blue);
 
-    angleChart = new ChartWidget("Angle", "ang", -90.0, 90.0, this);
+    angleChart = new ChartWidget("Angle", "ang [°]", -90.0, 90.0, this);
     angleChart->addSeries("Accelerometer", Qt::red);
     angleChart->addSeries("Gyroscope", Qt::green);
     angleChart->addSeries("Complementary filter", Qt::blue);

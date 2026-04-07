@@ -1,3 +1,7 @@
+/**
+ * @file serialhandler.cpp
+ * @brief Implementation of the SerialHandler class.
+ */
 #include "serialhandler.h"
 
 SerialHandler::SerialHandler(QObject *parent): QObject(parent)

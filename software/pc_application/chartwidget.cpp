@@ -1,3 +1,8 @@
+/**
+ * @file chartwidget.cpp
+ * @brief Implementation of the ChartWidget class.
+ */
+
 #include "chartwidget.h"
 
 ChartWidget::ChartWidget(const QString &chartName, const QString &yAxisName,float yMin, float yMax, QWidget *parent): QChartView(parent)

@@ -1,3 +1,8 @@
+/**
+ * @file mainwindow.cpp
+ * @brief Implementation of the MainWindow class.
+ */
+
 #include "mainwindow.h"
 #include <QDebug>
 

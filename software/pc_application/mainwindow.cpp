@@ -21,10 +21,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 
     QVBoxLayout *layoutGame = new QVBoxLayout();
 
-    labelGame = new QLabel("Game", this);
+    gameWidget = new GameWidget(this);
     buttonGameStartRestart = new QPushButton("Start", this);
 
-    layoutGame->addWidget(labelGame);
+    layoutGame->addWidget(gameWidget);
     layoutGame->addWidget(buttonGameStartRestart);
 
     buttonGameStartRestartState = false;

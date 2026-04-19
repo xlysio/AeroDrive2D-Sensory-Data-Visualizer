@@ -17,6 +17,7 @@
 #include <QWidget>
 #include "serialhandler.h"
 #include "chartwidget.h"
+#include "gamewidget.h"
 
 /**
  * @class MainWindow
@@ -46,9 +47,9 @@ public:
 
 private:
     /**
-     * @brief Placeholder label for the game area.
+     * @brief Game widget that contains the whole gaming area.
      */
-    QLabel *labelGame;
+    GameWidget *gameWidget;
 
     /**
      * @brief Button to start or restart the game.

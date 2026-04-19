@@ -14,6 +14,8 @@ qt_add_executable(pc_application
     serialhandler.cpp
     chartwidget.h
     chartwidget.cpp
+    gamewidget.h
+    gamewidget.cpp
 )
 
 target_link_libraries(pc_application

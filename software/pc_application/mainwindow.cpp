@@ -84,11 +84,13 @@ void MainWindow::onGameStartRestartClicked()
 {
     if (buttonGameStartRestartState)
     {
+        gameWidget->resetGame();
         buttonGameStartRestart->setText("Start");
         buttonGameStartRestartState = false;
     }
     else
     {
+        gameWidget->startGame();
         buttonGameStartRestart->setText("Restart");
         buttonGameStartRestartState = true;
     }
@@ -133,6 +135,7 @@ void MainWindow::onSerialDataReceived(float measuredDist, float realDist, float 
         angleChart->addPoint(2, angleDeg);
     }
 
+    gameWidget->updateCar(realDist, angleDeg);
 }
 
 

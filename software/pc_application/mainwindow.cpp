@@ -95,7 +95,7 @@ void MainWindow::onGameStartRestartClicked()
         buttonGameStartRestartState = true;
     }
 
-    qDebug() << "Start / Restart clicked";
+    // qDebug() << "Start / Restart clicked";
 }
 
 void MainWindow::onChartsStopResumeClicked()
@@ -111,12 +111,12 @@ void MainWindow::onChartsStopResumeClicked()
         buttonChartsStopResumeState = true;
     }
 
-    qDebug() << "Stop / Resume clicked";
+    // qDebug() << "Stop / Resume clicked";
 }
 
 void MainWindow::onChartsClearClicked()
 {
-    qDebug() << "Clear clicked";
+    // qDebug() << "Clear clicked";
 
     distanceChart->clearChart();
     angleChart->clearChart();
@@ -124,7 +124,7 @@ void MainWindow::onChartsClearClicked()
 
 void MainWindow::onSerialDataReceived(float measuredDist, float realDist, float accDeg, float gyroDeg, float angleDeg)
 {
-    qDebug() << measuredDist << ", " << realDist << ", " << accDeg << ", " << gyroDeg << ", " << angleDeg;
+    // qDebug() << measuredDist << ", " << realDist << ", " << accDeg << ", " << gyroDeg << ", " << angleDeg;
 
     if (!buttonChartsStopResumeState)
     {

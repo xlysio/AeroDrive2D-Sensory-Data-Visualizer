@@ -8,13 +8,13 @@ GameWidget::GameWidget(QWidget *parent)
     carPosition = QPointF(0.1, 0.5);
     carAngle = -90.0f;
     carSpeed = 0.0f;
-    carSize = 0.05f;
+    carSize = 0.06f;
 
     accelerationFactor = 0.01;
     maxSpeed = 0.01f;
     turnRate = 0.05f;
     grassSpeedFactor = 0.2f;
-    borderMargin = 0.02f;
+    borderMargin = 0.04f;
     totalLaps = 2;
 
     targetSpeed = 0.0f;
@@ -38,20 +38,20 @@ GameWidget::GameWidget(QWidget *parent)
 void GameWidget::buildTrack()
 {
     trackPath = QPainterPath();
-    trackPath.moveTo(0.1, 0.7);
-    trackPath.lineTo(0.1, 0.3);
-    trackPath.quadTo(0.1, 0.1, 0.3, 0.1);
-    trackPath.lineTo(0.4, 0.1);
-    trackPath.quadTo(0.6, 0.1, 0.6, 0.3);
-    trackPath.lineTo(0.6, 0.4);
-    trackPath.quadTo(0.6, 0.5, 0.8, 0.55);
-    trackPath.quadTo(0.9, 0.6, 0.9, 0.7);
-    trackPath.lineTo(0.9, 0.80);
-    trackPath.quadTo(0.875, 0.9, 0.8, 0.9);
-    trackPath.lineTo(0.7, 0.9);
-    trackPath.quadTo(0.65, 0.9, 0.55, 0.85);
-    trackPath.quadTo(0.45, 0.8, 0.35, 0.8);
-    trackPath.quadTo(0.2, 0.8, 0.1, 0.7);
+    trackPath.moveTo(0.10, 0.70);
+    trackPath.lineTo(0.10, 0.30);
+    trackPath.quadTo(0.10, 0.10, 0.30, 0.10);
+    trackPath.lineTo(0.40, 0.10);
+    trackPath.quadTo(0.60, 0.10, 0.60, 0.30);
+    trackPath.lineTo(0.60, 0.40);
+    trackPath.quadTo(0.60, 0.50, 0.80, 0.55);
+    trackPath.quadTo(0.90, 0.60, 0.90, 0.70);
+    trackPath.lineTo(0.90, 0.80);
+    trackPath.quadTo(0.875, 0.90, 0.80, 0.90);
+    trackPath.lineTo(0.70, 0.90);
+    trackPath.quadTo(0.65, 0.90, 0.55, 0.85);
+    trackPath.quadTo(0.45, 0.80, 0.35, 0.80);
+    trackPath.quadTo(0.2, 0.80, 0.10, 0.70);
 
     startLineBeginning = QPointF(0.06, 0.5);
     startLineEnd = QPointF(0.14, 0.5);
@@ -86,7 +86,7 @@ void GameWidget::paintEvent(QPaintEvent *event)
     QPainterPath scaledTrack = transform.map(trackPath);
 
     QPen trackPen(QColor(80, 80, 80));
-    trackPen.setWidth(60);
+    trackPen.setWidth(80);
     trackPen.setCapStyle(Qt::RoundCap);
     trackPen.setJoinStyle(Qt::RoundJoin);
     painter.setPen(trackPen);
@@ -99,7 +99,6 @@ void GameWidget::paintEvent(QPaintEvent *event)
     painter.drawLine(QPointF(startLineBeginning.x() * w, startLineBeginning.y() * h),
                      QPointF(startLineEnd.x() * w, startLineEnd.y() * h));
 
-
     painter.save();
 
     float cx = carPosition.x() * w;
@@ -109,14 +108,65 @@ void GameWidget::paintEvent(QPaintEvent *event)
     painter.translate(cx, cy);
     painter.rotate(carAngle);
 
-    QPolygonF carShape;
-    carShape << QPointF(size, 0) << QPointF(-size * 0.6, -size * 0.5) << QPointF(-size * 0.6, size * 0.5);
+    float bodyLength = size * 1.2f;
+    float bodyWidth = size * 0.5f;
+    float noseLength = size * 0.2f;
+    float noseWidthFront = size * 0.2f;
+    float wheelLength = size * 0.35f;
+    float wheelWidth = size * 0.15f;
+    float spoilerLength = size * 0.2f;
+    float spoilerWidth = size * 0.7f;
 
+    QRectF body(-bodyLength * 0.5f, -bodyWidth * 0.5f, bodyLength, bodyWidth);
     painter.setPen(Qt::NoPen);
-    painter.setBrush(Qt::red);
-    painter.drawPolygon(carShape);
+    painter.setBrush(QColor(200, 20, 20));
+    painter.drawRect(body);
+
+    QPolygonF nose;
+    nose << QPointF(bodyLength * 0.5f, -(bodyWidth + 2 * wheelWidth) * 0.5f) << QPointF(bodyLength * 0.5f + noseLength, -noseWidthFront * 0.5f)
+         << QPointF(bodyLength * 0.5f + noseLength, noseWidthFront * 0.5f) << QPointF(bodyLength * 0.5f, (bodyWidth + 2 * wheelWidth) * 0.5f);
+    painter.setBrush(QColor(200, 20, 20));
+    painter.drawPolygon(nose);
+
+    painter.setBrush(QColor(0, 0, 0));
+    painter.drawRect(QRectF(-bodyLength * 0.4f, -bodyWidth * 0.5f - wheelWidth, wheelLength, wheelWidth));
+    painter.drawRect(QRectF(-bodyLength * 0.4f, bodyWidth * 0.5f, wheelLength, wheelWidth));
+    painter.drawRect(QRectF(bodyLength * 0.2f, -bodyWidth * 0.5f - wheelWidth, wheelLength, wheelWidth));
+    painter.drawRect(QRectF(bodyLength * 0.2f, bodyWidth * 0.5f, wheelLength, wheelWidth));
+
+
+    painter.setBrush(QColor(30, 30, 30));
+    painter.drawRect(QRectF(-bodyLength * 0.55f, -spoilerWidth * 0.5f, spoilerLength, spoilerWidth));
 
     painter.restore();
+
+    painter.setPen(QPen(QColor(0, 80, 0), 2));
+    painter.setBrush(QColor(20, 100, 20));
+
+    QList<QPointF> trees = {{0.80, 0.05}, {0.87, 0.07}, {0.94, 0.10}, {0.96, 0.04},
+                            {0.95, 0.17}, {0.89, 0.14}, {0.90, 0.21}, {0.96, 0.24},
+                            {0.82, 0.12}, {0.84, 0.18}, {0.85, 0.25}, {0.91, 0.28}};
+
+    float treeRadius = 0.03f * qMin(w, h);
+
+    for (const QPointF &tree: trees)
+    {
+        painter.drawEllipse(QPointF(tree.x() * w, tree.y() * h), treeRadius, treeRadius);
+    }
+
+    painter.setPen(QPen(QColor(65, 65, 65), 1));
+    painter.setBrush(QColor(210, 180, 100));
+    painter.drawRect(QRectF(0.04 * w, 0.88 * h, 0.26 * w, 0.02 * h));
+    painter.drawRect(QRectF(0.04 * w, 0.90 * h, 0.26 * w, 0.02 * h));
+    painter.drawRect(QRectF(0.04 * w, 0.92 * h, 0.26 * w, 0.02 * h));
+    painter.drawRect(QRectF(0.04 * w, 0.94 * h, 0.26 * w, 0.02 * h));
+    painter.drawRect(QRectF(0.04 * w, 0.96 * h, 0.26 * w, 0.02 * h));
+
+    painter.setPen(QPen(QColor(0, 0, 0), 0.5));
+    painter.setBrush(QColor(130, 130, 130));
+    painter.drawRect(QRectF(0.03 * w, 0.92 * h, 0.01 * w, 0.06 * h));
+    painter.drawRect(QRectF(0.30 * w, 0.92 * h, 0.01 * w, 0.06 * h));
+    painter.drawRect(QRectF(0.03 * w, 0.98 * h, 0.28 * w, 0.01 * h));
 
     QPen checkpointPen(Qt::blue);
     checkpointPen.setWidth(4);

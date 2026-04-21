@@ -62,6 +62,7 @@ private:
     bool raceFinished;
     float lastSteerAngle;
     float lastSpeed;
+    QList<QRectF> obstacles;
 
 private slots:
     void gameTick();

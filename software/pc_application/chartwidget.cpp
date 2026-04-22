@@ -41,6 +41,13 @@ void ChartWidget::addPoint(int seriesIndex, float value)
     float time = elapsedTimer.elapsed() / 1000.0f;
     seriesList[seriesIndex]->append(time, value);
 
+    QList<QPointF> points = seriesList[seriesIndex]->points();
+    while(points.size() > 0 && points.first().x() < time - timeWindow)
+    {
+        points.removeFirst();
+    }
+    seriesList[seriesIndex]->replace(points);
+
     if (time > timeWindow)
     {
         xAxis->setRange(time - timeWindow, time);

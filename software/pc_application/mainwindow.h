@@ -87,6 +87,16 @@ private:
     bool buttonChartsStopResumeState;
 
     /**
+     * @brief Button to connect or disconnect the serial port.
+     */
+    QPushButton *buttonSerialConnectDisconnect;
+
+    /**
+     * @brief Flag to track the current state of the Connect/Disconnect button.
+     */
+    bool buttonSerialConnectDisconnectState;
+
+    /**
      * @brief Handler for serial port communication with the controller.
      */
     SerialHandler *serialHandler;
@@ -95,7 +105,8 @@ private slots:
     /**
      * @brief Slot that triggers when the Start/Restart button is clicked.
      *
-     * Toggles the button text between "Start" and "Restart" and updates the state flag (for now).
+     * Toggles the button text between "Start" and "Restart" and updates the state flag.
+     * Determines the state of the game.
      */
     void onGameStartRestartClicked();
 
@@ -113,6 +124,14 @@ private slots:
      * Clears all data series in both the distance and angle charts and resets the time axis.
      */
     void onChartsClearClicked();
+
+    /**
+     * @brief Slot that triggers when the Connect/Disconnect button is cliked.
+     *
+     * Toggles the button text between "Connect" and "Disconnect" and updates the state flag.
+     * Determines the state of connection with the serial port.
+     */
+    void onSerialConnectDisconnectClicked();
 
     /**
      * @brief Slot that receives parsed sensor data from SerialHandler.

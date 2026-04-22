@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     setWindowTitle("AeroDrive2D");
 
     serialHandler = new SerialHandler(this);
-    serialHandler->openPort("/dev/ttyACM0");
+    buttonSerialConnectDisconnectState = false;
 
     QWidget *widgetWindow = new QWidget(this);
     setCentralWidget(widgetWindow);
@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 
     buttonChartsClear = new QPushButton("Clear", this);
     buttonChartsStopResume = new QPushButton("Stop", this);
+    buttonSerialConnectDisconnect = new QPushButton("Connect", this);
 
     layoutCharts->addWidget(distanceChart);
     layoutCharts->addLayout(layoutDistCheckboxes);
@@ -61,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     layoutCharts->addLayout(layoutAngleCheckboxes);
     layoutChartsButtons->addWidget(buttonChartsClear);
     layoutChartsButtons->addWidget(buttonChartsStopResume);
+    layoutChartsButtons->addWidget(buttonSerialConnectDisconnect);
     layoutCharts->addLayout(layoutChartsButtons);
 
     buttonChartsStopResumeState = false;
@@ -73,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     connect(buttonGameStartRestart, &QPushButton::clicked, this, &MainWindow::onGameStartRestartClicked);
     connect(buttonChartsClear, &QPushButton::clicked, this, &MainWindow::onChartsClearClicked);
     connect(buttonChartsStopResume, &QPushButton::clicked, this, &MainWindow::onChartsStopResumeClicked);
+    connect(buttonSerialConnectDisconnect, &QPushButton::clicked, this, &MainWindow::onSerialConnectDisconnectClicked);
     connect(serialHandler, &SerialHandler::dataReceived, this, &MainWindow::onSerialDataReceived);
 }
 
@@ -120,6 +123,24 @@ void MainWindow::onChartsClearClicked()
 
     distanceChart->clearChart();
     angleChart->clearChart();
+}
+
+void MainWindow::onSerialConnectDisconnectClicked()
+{
+    if (buttonSerialConnectDisconnectState)
+    {
+        serialHandler->closePort();
+        buttonSerialConnectDisconnect->setText("Connect");
+        buttonSerialConnectDisconnectState = false;
+    }
+    else
+    {
+        if (serialHandler->openPort("/dev/ttyACM0"))
+        {
+            buttonSerialConnectDisconnect->setText("Disconnect");
+            buttonSerialConnectDisconnectState = true;
+        }
+    }
 }
 
 void MainWindow::onSerialDataReceived(float measuredDist, float realDist, float accDeg, float gyroDeg, float angleDeg)

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(pc_application LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets SerialPort Charts)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets SerialPort Charts LinguistTools)
 
 qt_standard_project_setup()
 
@@ -16,6 +16,12 @@ qt_add_executable(pc_application
     chartwidget.cpp
     gamewidget.h
     gamewidget.cpp
+)
+
+qt_add_translations(pc_application
+    TS_FILES
+        translations/app_en.ts
+        translations/app_pl.ts
 )
 
 target_link_libraries(pc_application

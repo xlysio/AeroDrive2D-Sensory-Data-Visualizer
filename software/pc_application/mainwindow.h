@@ -15,6 +15,9 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QWidget>
+#include <QTranslator>
+#include <QToolButton>
+
 #include "serialhandler.h"
 #include "chartwidget.h"
 #include "gamewidget.h"
@@ -72,6 +75,16 @@ private:
     ChartWidget *angleChart;
 
     /**
+     * @brief List with checkboxes for distance chart.
+     */
+    QList<QCheckBox*> distanceCheckboxes;
+
+    /**
+     * @brief List with checkboxes for distance chart.
+     */
+    QList<QCheckBox*> angleCheckboxes;
+
+    /**
      * @brief Button to clear all chart data.
      */
     QPushButton *buttonChartsClear;
@@ -100,6 +113,23 @@ private:
      * @brief Handler for serial port communication with the controller.
      */
     SerialHandler *serialHandler;
+
+    /**
+     * @brief Button for switching language to english.
+     */
+    QToolButton *buttonLanguageEnglish;
+
+    /**
+     * @brief Button for switching language to polish.
+     */
+    QToolButton *buttonLanguagePolish;
+
+    /**
+     * @brief Translator instance to handle translations.
+     */
+    QTranslator *translator;
+
+    void retranslateUi();
 
 private slots:
     /**
@@ -145,6 +175,21 @@ private slots:
      * @param angleDeg Roll angle after complementary filter [degrees].
      */
     void onSerialDataReceived(float measuredDist, float realDist, float accDeg, float gyroDeg, float angleDeg);
+
+    /**
+     * @brief Slot that triggers when the button with british flag is cliked.
+     *
+     * Switches the language to english.
+     */
+    void switchToEnglish();
+
+    /**
+     * @brief Slot that triggers when the button with polish flag is cliked.
+     *
+     * Switches the language to english.
+     */
+    void switchToPolish();
+
 };
 
 #endif // MAINWINDOW_H

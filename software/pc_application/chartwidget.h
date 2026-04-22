@@ -65,6 +65,14 @@ public:
      */
     QCheckBox* createSeriesCheckbox(int seriesIndex, QWidget *parent = nullptr);
 
+    /**
+     * @brief Retranslates the chart.
+     * @param title Title displayed above the chart.
+     * @param yAxisLabel Label for the vertical axis.
+     * @param seriesNames List with series' names.
+     */
+    void retranslate(const QString &title, const QString &yAxisLabel, const QStringList &seriesNames);
+
 private:
     /**
      *  @brief The QChart instance rendered by this widget.

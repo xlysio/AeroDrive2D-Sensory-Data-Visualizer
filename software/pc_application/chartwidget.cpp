@@ -88,3 +88,13 @@ QCheckBox* ChartWidget::createSeriesCheckbox(int seriesIndex, QWidget *parent)
     return checkbox;
 }
 
+void ChartWidget::retranslate(const QString &title, const QString &yAxisLabel, const QStringList &seriesNames)
+{
+    chart->setTitle(title);
+    yAxis->setTitleText(yAxisLabel);
+
+    for (int i = 0; i < seriesList.size(); ++i)
+    {
+        seriesList[i]->setName(seriesNames[i]);
+    }
+}

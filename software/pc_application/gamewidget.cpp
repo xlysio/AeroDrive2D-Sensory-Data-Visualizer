@@ -13,7 +13,7 @@ GameWidget::GameWidget(QWidget *parent)
     accelerationFactor = 0.01;
     maxSpeed = 0.01f;
     turnRate = 0.05f;
-    grassSpeedFactor = 0.2f;
+    grassSpeedFactor = 0.3f;
     borderMargin = 0.04f;
     totalLaps = 5;
 
@@ -203,8 +203,8 @@ void GameWidget::paintEvent(QPaintEvent *event)
         painter.setPen(Qt::white);
         QFont infoFont("Arial", 16, QFont::Bold);
         painter.setFont(infoFont);
-        painter.drawText(10, 30, QString("Lap: %1 / %2").arg(currentLap + 1).arg(totalLaps));
-        painter.drawText(10, 55, QString("Time: %1 s").arg(currentTime, 0, 'f', 2));
+        painter.drawText(10, 30, tr("Lap: %1 / %2").arg(currentLap + 1).arg(totalLaps));
+        painter.drawText(10, 55, tr("Time: %1 s").arg(currentTime, 0, 'f', 2));
     }
 
     if (raceFinished)
@@ -217,11 +217,11 @@ void GameWidget::paintEvent(QPaintEvent *event)
         for (int i = 0; i < lapTimes.size(); ++i)
         {
             totalTime += lapTimes[i];
-            QString lapText = QString("Lap %1: %2 s").arg(i + 1).arg(lapTimes[i], 0, 'f', 2);
+            QString lapText = tr("Lap %1: %2 s").arg(i + 1).arg(lapTimes[i], 0, 'f', 2);
             painter.drawText(w / 2 - 80, h / 2 + 40 + i * 25, lapText);
         }
 
-        QString totalText = QString("Total: %1 s").arg(totalTime, 0, 'f', 2);
+        QString totalText = tr("Total: %1 s").arg(totalTime, 0, 'f', 2);
         QFont totalFont("Arial", 20, QFont::Bold);
         painter.setFont(totalFont);
         painter.drawText(w / 2 - 80, h / 2 + 40 + lapTimes.size() * 25 + 10, totalText);

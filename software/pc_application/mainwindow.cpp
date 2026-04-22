@@ -30,17 +30,18 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     QVBoxLayout *layoutGame = new QVBoxLayout();
 
     gameWidget = new GameWidget(this);
+
     buttonGameStartRestart = new QPushButton(tr("Start"), this);
+    buttonGameStartRestartState = false;
 
     layoutGame->addWidget(gameWidget);
     layoutGame->addWidget(buttonGameStartRestart);
-
-    buttonGameStartRestartState = false;
-
     layoutWindow->addLayout(layoutGame);
 
+    // right side - charts
     QVBoxLayout *layoutCharts = new QVBoxLayout();
-    QHBoxLayout *layoutChartsButtons = new QHBoxLayout();
+
+    // language buttons
     QHBoxLayout *layoutFlags = new QHBoxLayout();
 
     buttonLanguageEnglish = new QToolButton(this);
@@ -54,21 +55,27 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     layoutFlags->addStretch();
     layoutFlags->addWidget(buttonLanguageEnglish);
     layoutFlags->addWidget(buttonLanguagePolish);
+    layoutCharts->addLayout(layoutFlags);
 
+    // distance chart
     distanceChart = new ChartWidget(tr("Distance"), tr("d [mm]"), 0.0, 500.0, this);
     distanceChart->addSeries(tr("Measured"), Qt::red);
     distanceChart->addSeries(tr("Compensated"), Qt::blue);
-
-    angleChart = new ChartWidget(tr("Angle"), tr("ang [°]"), -90.0, 90.0, this);
-    angleChart->addSeries(tr("Accelerometer"), Qt::red);
-    angleChart->addSeries(tr("Gyroscope"), Qt::green);
-    angleChart->addSeries(tr("Complementary filter"), Qt::blue);
 
     QHBoxLayout *layoutDistCheckboxes = new QHBoxLayout();
     distanceCheckboxes.append(distanceChart->createSeriesCheckbox(0, this));
     distanceCheckboxes.append(distanceChart->createSeriesCheckbox(1, this));
     layoutDistCheckboxes->addWidget(distanceCheckboxes[0]);
     layoutDistCheckboxes->addWidget(distanceCheckboxes[1]);
+
+    layoutCharts->addWidget(distanceChart);
+    layoutCharts->addLayout(layoutDistCheckboxes);
+
+    // angle chart
+    angleChart = new ChartWidget(tr("Angle"), tr("ang [°]"), -90.0, 90.0, this);
+    angleChart->addSeries(tr("Accelerometer"), Qt::red);
+    angleChart->addSeries(tr("Gyroscope"), Qt::green);
+    angleChart->addSeries(tr("Complementary filter"), Qt::blue);
 
     QHBoxLayout *layoutAngleCheckboxes = new QHBoxLayout();
     angleCheckboxes.append(angleChart->createSeriesCheckbox(0, this));
@@ -78,27 +85,30 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     layoutAngleCheckboxes->addWidget(angleCheckboxes[1]);
     layoutAngleCheckboxes->addWidget(angleCheckboxes[2]);
 
-    buttonChartsClear = new QPushButton(tr("Clear"), this);
-    buttonChartsStopResume = new QPushButton(tr("Stop"), this);
-    buttonSerialConnectDisconnect = new QPushButton(tr("Connect"), this);
-
-    layoutCharts->addLayout(layoutFlags);
-    layoutCharts->addWidget(distanceChart);
-    layoutCharts->addLayout(layoutDistCheckboxes);
     layoutCharts->addWidget(angleChart);
     layoutCharts->addLayout(layoutAngleCheckboxes);
+
+    // chart control buttons
+    QHBoxLayout *layoutChartsButtons = new QHBoxLayout();
+
+    buttonChartsClear = new QPushButton(tr("Clear"), this);
+    buttonChartsStopResume = new QPushButton(tr("Stop"), this);
+    buttonChartsStopResumeState = false;
+
+    buttonSerialConnectDisconnect = new QPushButton(tr("Connect"), this);
+
     layoutChartsButtons->addWidget(buttonChartsClear);
     layoutChartsButtons->addWidget(buttonChartsStopResume);
     layoutChartsButtons->addWidget(buttonSerialConnectDisconnect);
     layoutCharts->addLayout(layoutChartsButtons);
 
-    buttonChartsStopResumeState = false;
-
     layoutWindow->addLayout(layoutCharts);
 
+    // equal stretch for both halves of the window
     layoutWindow->setStretch(0, 1);
     layoutWindow->setStretch(1, 1);
 
+    // signal to slots connections
     connect(buttonGameStartRestart, &QPushButton::clicked, this, &MainWindow::onGameStartRestartClicked);
     connect(buttonChartsClear, &QPushButton::clicked, this, &MainWindow::onChartsClearClicked);
     connect(buttonChartsStopResume, &QPushButton::clicked, this, &MainWindow::onChartsStopResumeClicked);
@@ -126,8 +136,6 @@ void MainWindow::onGameStartRestartClicked()
         buttonGameStartRestart->setText(tr("Restart"));
         buttonGameStartRestartState = true;
     }
-
-    // qDebug() << "Start / Restart clicked";
 }
 
 void MainWindow::onChartsStopResumeClicked()
@@ -142,14 +150,10 @@ void MainWindow::onChartsStopResumeClicked()
         buttonChartsStopResume->setText(tr("Resume"));
         buttonChartsStopResumeState = true;
     }
-
-    // qDebug() << "Stop / Resume clicked";
 }
 
 void MainWindow::onChartsClearClicked()
 {
-    // qDebug() << "Clear clicked";
-
     distanceChart->clearChart();
     angleChart->clearChart();
 }
@@ -174,8 +178,6 @@ void MainWindow::onSerialConnectDisconnectClicked()
 
 void MainWindow::onSerialDataReceived(float measuredDist, float realDist, float accDeg, float gyroDeg, float angleDeg)
 {
-    // qDebug() << measuredDist << ", " << realDist << ", " << accDeg << ", " << gyroDeg << ", " << angleDeg;
-
     if (!buttonChartsStopResumeState)
     {
         distanceChart->addPoint(0, measuredDist);
@@ -199,19 +201,17 @@ void MainWindow::switchToPolish()
     if (translator->load("app_pl", QCoreApplication::applicationDirPath()))
     {
         qApp->installTranslator(translator);
-        // qDebug() << "Loaded";
     }
-    else
-    {
-        // qDebug() << "Not loaded";
-    }
+
     retranslateUi();
 }
 
 void MainWindow::retranslateUi()
 {
+    // window title
     setWindowTitle(tr("AeroDrive2D"));
 
+    // game button
     if (buttonGameStartRestartState)
     {
         buttonGameStartRestart->setText(tr("Restart"));
@@ -221,6 +221,7 @@ void MainWindow::retranslateUi()
         buttonGameStartRestart->setText(tr("Start"));
     }
 
+    // chart control buttons
     buttonChartsClear->setText(tr("Clear"));
 
     if (buttonChartsStopResumeState)
@@ -241,6 +242,7 @@ void MainWindow::retranslateUi()
         buttonSerialConnectDisconnect->setText(tr("Connect"));
     }
 
+    // distance chart and checkboxes
     distanceChart->retranslate(tr("Distance"), tr("d [mm]"), {tr("Measured"), tr("Compensated")});
     QStringList distanceCheckboxesNames = {tr("Measured"), tr("Compensated")};
     for (int i = 0; i < distanceCheckboxes.size(); ++i)
@@ -248,6 +250,7 @@ void MainWindow::retranslateUi()
         distanceCheckboxes[i]->setText(distanceCheckboxesNames[i]);
     }
 
+    // angle chart and checkboxes
     angleChart->retranslate(tr("Angle"), tr("ang [°]"), {tr("Accelerometer"), tr("Gyroscope"), tr("Complementary filter")});
     QStringList angleCheckboxesNames = {tr("Accelerometer"), tr("Gyroscope"),  tr("Complementary filter")};
     for (int i = 0; i < angleCheckboxes.size(); ++i)

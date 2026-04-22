@@ -16,8 +16,10 @@
  * @class SerialHandler
  * @brief Receives and parses sensor data frames from the microcontroller.
  *
- * The controller sends text frames at 50 Hz.
- *
+ * The controller sends text frames at 50 Hz in the format:
+ * @code
+ * $AD,<measured_dist>,<compensated_dist>,<acc_deg>,<gyro_deg>,<angle_deg>\n
+ * @endcode
  * SerialHandler opens the serial port, buffers incoming bytes until a full line is available, validates the frame prefix,
  * converts each field to a float, and emits the dataReceived() signal with theparsed values.
  */
@@ -28,7 +30,7 @@ class SerialHandler: public QObject
 public:
     /**
      * @brief Constructs the SerialHandler and configures port parameters.
-     * @param parent Optional parent QObject.
+     * @param parent - Optional parent QObject.
      */
     SerialHandler(QObject *parent = nullptr);
 
@@ -39,7 +41,7 @@ public:
 
     /**
      * @brief Opens the serial port for reading.
-     * @param portName System name of the port.
+     * @param portName - System name of the port.
      * @return true if the port was opened successfully, false if not.
      */
     bool openPort(const QString &portName);
@@ -52,7 +54,7 @@ public:
 
 private:
     /**
-     *  @brief Pointer to the QSerialPort instance used for communication.
+     *  @brief QSerialPort instance used for communication.
       */
     QSerialPort *serial;
 
@@ -68,11 +70,11 @@ private slots:
 signals:
     /**
      * @brief Emitted when a valid sensor data frame has been parsed.
-     * @param measuredDist Distance measurement from distance sensor [mm].
-     * @param realDist Compensated distance [mm].
-     * @param accDeg Roll angle computed from accelerometer [degrees].
-     * @param gyroDeg Roll angle integrated from gyroscope [degrees].
-     * @param angleDeg Roll angle after complementary filter [degrees].
+     * @param measuredDist - Raw distance measurement from distance sensor [mm].
+     * @param realDist - Compensated distance [mm].
+     * @param accDeg - Roll angle computed from accelerometer [degrees].
+     * @param gyroDeg - Roll angle integrated from gyroscope [degrees].
+     * @param angleDeg - Roll angle after complementary filter [degrees].
      */
     void dataReceived(float measuredDist, float realDist, float accDeg, float gyroDeg, float angleDeg);
 

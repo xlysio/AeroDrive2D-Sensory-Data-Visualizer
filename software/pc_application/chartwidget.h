@@ -30,18 +30,18 @@ class ChartWidget: public QChartView
 public:
     /**
      * @brief Constructs a ChartWidget with the given axis configuration.
-     * @param chartName Title displayed above the chart.
-     * @param yAxisName Label for the vertical axis.
-     * @param yMin Minimum value of the Y axis.
-     * @param yMax Maximum value of the Y axis.
-     * @param parent Optional parent widget.
+     * @param chartName - Title displayed above the chart.
+     * @param yAxisName - Label for the vertical axis.
+     * @param yMin - Minimum value of the Y axis.
+     * @param yMax - Maximum value of the Y axis.
+     * @param parent - Optional parent widget.
      */
     ChartWidget(const QString &chartName, const QString &yAxisName, float yMin, float yMax, QWidget *parent = nullptr);
 
     /**
      * @brief Appends a data point to the specified series.
-     * @param seriesIndex Index of the chosen series.
-     * @param value Value to append.
+     * @param seriesIndex - Index of the chosen series.
+     * @param value - Value to append.
      */
     void addPoint(int seriesIndex, float value);
 
@@ -52,24 +52,24 @@ public:
 
     /**
      * @brief Adds a new data series to the chart.
-     * @param seriesName Series name shown in the legend.
-     * @param color Line color for added series.
+     * @param seriesName - Series name shown in the legend.
+     * @param color - Line color for added series.
      */
     void addSeries(const QString &seriesName, const QColor &color);
 
     /**
      * @brief Creates a QCheckBox that toggles visibility of the given series.
-     * @param seriesIndex Index of the chosen series.
-     * @param parent Optional parent widget for the checkbox.
+     * @param seriesIndex - Index of the chosen series.
+     * @param parent - Optional parent widget for the checkbox.
      * @return Pointer to the newly created QCheckBox.
      */
     QCheckBox* createSeriesCheckbox(int seriesIndex, QWidget *parent = nullptr);
 
     /**
      * @brief Retranslates the chart.
-     * @param title Title displayed above the chart.
-     * @param yAxisLabel Label for the vertical axis.
-     * @param seriesNames List with series' names.
+     * @param title - Title displayed above the chart.
+     * @param yAxisLabel - Label for the vertical axis.
+     * @param seriesNames - List with series' names.
      */
     void retranslate(const QString &title, const QString &yAxisLabel, const QStringList &seriesNames);
 

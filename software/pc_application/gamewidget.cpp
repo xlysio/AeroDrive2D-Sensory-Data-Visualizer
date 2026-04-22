@@ -1,42 +1,53 @@
+/**
+ * @file gamewidget.cpp
+ * @brief Implementation of the GameWidget class.
+ */
+
 #include "gamewidget.h"
 
-GameWidget::GameWidget(QWidget *parent)
-    : QWidget{parent}
+GameWidget::GameWidget(QWidget *parent): QWidget{parent}
 {
-    this->buildTrack();
+    buildTrack();
 
+    // car initial state
     carPosition = QPointF(0.1, 0.5);
     carAngle = -90.0f;
     carSpeed = 0.0f;
     carSize = 0.05f;
+    targetSpeed = 0.0f;
+    onTrack = true;
 
-    accelerationFactor = 0.01;
+    // physics coefficients
+    accelerationFactor = 0.01f;
     maxSpeed = 0.01f;
     turnRate = 0.05f;
     grassSpeedFactor = 0.3f;
     borderMargin = 0.04f;
-    totalLaps = 5;
 
-    targetSpeed = 0.0f;
-    onTrack = true;
+    // game state
+    totalLaps = 5;
     currentLap = 0;
     gameRunning = false;
     countdownActive = false;
     countdownTime = 5;
     raceFinished = false;
+
+    // controller input
     lastSteerAngle = 0.0f;
     lastSpeed = 0.0f;
-    nextCheckpoint = 0;
 
-    checkpointsPassed.clear();
+    // checkpoint tracking
     checkpointsPassed = QList<bool>(checkpoints.size(), false);
 
+    // game loop timer - 50 fps
     gameTimer = new QTimer(this);
     connect(gameTimer, &QTimer::timeout, this, &GameWidget::gameTick);
 }
 
+
 void GameWidget::buildTrack()
 {
+    // track center path
     trackPath = QPainterPath();
     trackPath.moveTo(0.10, 0.70);
     trackPath.lineTo(0.10, 0.30);
@@ -53,15 +64,18 @@ void GameWidget::buildTrack()
     trackPath.quadTo(0.45, 0.80, 0.35, 0.80);
     trackPath.quadTo(0.2, 0.80, 0.10, 0.70);
 
+    // start/finish line
     startLineBeginning = QPointF(0.06, 0.5);
     startLineEnd = QPointF(0.14, 0.5);
 
+    // collision area
     QPainterPathStroker stroker;
     stroker.setWidth(0.08);
     stroker.setCapStyle(Qt::RoundCap);
     stroker.setJoinStyle(Qt::RoundJoin);
     trackArea = stroker.createStroke(trackPath);
 
+    // checkpoints
     checkpoints.clear();
     checkpoints.append(QLineF(0.04, 0.3, 0.16, 0.3));
     checkpoints.append(QLineF(0.35, 0.04, 0.35, 0.16));
@@ -69,6 +83,7 @@ void GameWidget::buildTrack()
     checkpoints.append(QLineF(0.84, 0.75, 0.96, 0.75));
     checkpoints.append(QLineF(0.50, 0.76, 0.50, 0.90));
 
+    // obstacle collision zones
     obstacles.clear();
     obstacles.append(QRectF(0.78, 0.02, 0.20, 0.28));
     obstacles.append(QRectF(0.03, 0.87, 0.28, 0.12));
@@ -83,12 +98,29 @@ void GameWidget::paintEvent(QPaintEvent *event)
     int w = width();
     int h = height();
 
-    painter.fillRect(rect(), QColor(30, 140, 30));
+    drawBackground(painter, w, h);
+    drawTrack(painter, w, h);
+    drawCar(painter, w, h);
+    drawScenery(painter, w, h);
+    drawCheckpoints(painter, w, h);
+    drawHud(painter, w, h);
+}
 
+void GameWidget::drawBackground(QPainter &painter, int w, int h)
+{
+    Q_UNUSED(w);
+    Q_UNUSED(h);
+    painter.fillRect(rect(), QColor(30, 140, 30));
+}
+
+void GameWidget::drawTrack(QPainter &painter, int w, int h)
+{
+    // scale normalized path to widget size
     QTransform transform;
     transform.scale(w, h);
     QPainterPath scaledTrack = transform.map(trackPath);
 
+    // asphalt
     QPen trackPen(QColor(80, 80, 80));
     trackPen.setWidth(80);
     trackPen.setCapStyle(Qt::RoundCap);
@@ -97,53 +129,17 @@ void GameWidget::paintEvent(QPaintEvent *event)
     painter.setBrush(Qt::NoBrush);
     painter.drawPath(scaledTrack);
 
+    // start/finish line
     QPen startPen(Qt::white);
     startPen.setWidth(12);
     painter.setPen(startPen);
     painter.drawLine(QPointF(startLineBeginning.x() * w, startLineBeginning.y() * h),
                      QPointF(startLineEnd.x() * w, startLineEnd.y() * h));
+}
 
-    painter.save();
-
-    float cx = carPosition.x() * w;
-    float cy = carPosition.y() * h;
-    float size = carSize * qMin(w, h);
-
-    painter.translate(cx, cy);
-    painter.rotate(carAngle);
-
-    float bodyLength = size * 1.2f;
-    float bodyWidth = size * 0.5f;
-    float noseLength = size * 0.2f;
-    float noseWidthFront = size * 0.2f;
-    float wheelLength = size * 0.35f;
-    float wheelWidth = size * 0.15f;
-    float spoilerLength = size * 0.2f;
-    float spoilerWidth = size * 0.7f;
-
-    QRectF body(-bodyLength * 0.5f, -bodyWidth * 0.5f, bodyLength, bodyWidth);
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(QColor(200, 20, 20));
-    painter.drawRect(body);
-
-    QPolygonF nose;
-    nose << QPointF(bodyLength * 0.5f, -(bodyWidth + 2 * wheelWidth) * 0.5f) << QPointF(bodyLength * 0.5f + noseLength, -noseWidthFront * 0.5f)
-         << QPointF(bodyLength * 0.5f + noseLength, noseWidthFront * 0.5f) << QPointF(bodyLength * 0.5f, (bodyWidth + 2 * wheelWidth) * 0.5f);
-    painter.setBrush(QColor(200, 20, 20));
-    painter.drawPolygon(nose);
-
-    painter.setBrush(QColor(0, 0, 0));
-    painter.drawRect(QRectF(-bodyLength * 0.4f, -bodyWidth * 0.5f - wheelWidth, wheelLength, wheelWidth));
-    painter.drawRect(QRectF(-bodyLength * 0.4f, bodyWidth * 0.5f, wheelLength, wheelWidth));
-    painter.drawRect(QRectF(bodyLength * 0.2f, -bodyWidth * 0.5f - wheelWidth, wheelLength, wheelWidth));
-    painter.drawRect(QRectF(bodyLength * 0.2f, bodyWidth * 0.5f, wheelLength, wheelWidth));
-
-
-    painter.setBrush(QColor(30, 30, 30));
-    painter.drawRect(QRectF(-bodyLength * 0.55f, -spoilerWidth * 0.5f, spoilerLength, spoilerWidth));
-
-    painter.restore();
-
+void GameWidget::drawScenery(QPainter &painter, int w, int h)
+{
+    // forest
     painter.setPen(QPen(QColor(0, 80, 0), 2));
     painter.setBrush(QColor(20, 100, 20));
 
@@ -153,65 +149,123 @@ void GameWidget::paintEvent(QPaintEvent *event)
 
     float treeRadius = 0.03f * qMin(w, h);
 
-    for (const QPointF &tree: trees)
+    for (const QPointF &tree : trees)
     {
         painter.drawEllipse(QPointF(tree.x() * w, tree.y() * h), treeRadius, treeRadius);
     }
 
+    // stands
     painter.setPen(QPen(QColor(65, 65, 65), 1));
     painter.setBrush(QColor(210, 180, 100));
-    painter.drawRect(QRectF(0.04 * w, 0.88 * h, 0.26 * w, 0.02 * h));
-    painter.drawRect(QRectF(0.04 * w, 0.90 * h, 0.26 * w, 0.02 * h));
-    painter.drawRect(QRectF(0.04 * w, 0.92 * h, 0.26 * w, 0.02 * h));
-    painter.drawRect(QRectF(0.04 * w, 0.94 * h, 0.26 * w, 0.02 * h));
-    painter.drawRect(QRectF(0.04 * w, 0.96 * h, 0.26 * w, 0.02 * h));
+    for (int row = 0; row < 5; ++row)
+    {
+        float y = 0.88 + row * 0.02;
+        painter.drawRect(QRectF(0.04 * w, y * h, 0.26 * w, 0.02 * h));
+    }
 
+    // stands pillars
     painter.setPen(QPen(QColor(0, 0, 0), 0.5));
     painter.setBrush(QColor(130, 130, 130));
     painter.drawRect(QRectF(0.03 * w, 0.92 * h, 0.01 * w, 0.06 * h));
     painter.drawRect(QRectF(0.30 * w, 0.92 * h, 0.01 * w, 0.06 * h));
     painter.drawRect(QRectF(0.03 * w, 0.98 * h, 0.28 * w, 0.01 * h));
+}
 
+void GameWidget::drawCheckpoints(QPainter &painter, int w, int h)
+{
     QPen checkpointPen(Qt::blue);
     checkpointPen.setWidth(4);
     painter.setPen(checkpointPen);
+
     for (int i = 0; i < checkpoints.size(); ++i)
     {
-        QLineF checkpoint = checkpoints[i];
-        painter.drawLine(QPointF(checkpoint.x1() * w, checkpoint.y1() * h),
-                         QPointF(checkpoint.x2() * w, checkpoint.y2() * h));
+        QLineF cp = checkpoints[i];
+        painter.drawLine(QPointF(cp.x1() * w, cp.y1() * h),
+                         QPointF(cp.x2() * w, cp.y2() * h));
     }
+}
 
+void GameWidget::drawCar(QPainter &painter, int w, int h)
+{
+    painter.save();
+
+    float cx = carPosition.x() * w;
+    float cy = carPosition.y() * h;
+    float size = carSize * qMin(w, h);
+
+    painter.translate(cx, cy);
+    painter.rotate(carAngle);
+
+    // dimensions relative to size
+    float bodyLength = size * 1.2f;
+    float bodyWidth = size * 0.5f;
+    float noseLength = size * 0.2f;
+    float noseWidthFront = size * 0.2f;
+    float wheelLength = size * 0.35f;
+    float wheelWidth = size * 0.15f;
+    float spoilerLength = size * 0.2f;
+    float spoilerWidth = size * 0.7f;
+
+    painter.setPen(Qt::NoPen);
+
+    // body
+    painter.setBrush(QColor(200, 20, 20));
+    painter.drawRect(QRectF(-bodyLength * 0.5f, -bodyWidth * 0.5f, bodyLength, bodyWidth));
+
+    // nose
+    QPolygonF nose;
+    nose << QPointF(bodyLength * 0.5f, -(bodyWidth + 2 * wheelWidth) * 0.5f)
+         << QPointF(bodyLength * 0.5f + noseLength, -noseWidthFront * 0.5f)
+         << QPointF(bodyLength * 0.5f + noseLength, noseWidthFront * 0.5f)
+         << QPointF(bodyLength * 0.5f, (bodyWidth + 2 * wheelWidth) * 0.5f);
+    painter.drawPolygon(nose);
+
+    // wheels
+    painter.setBrush(Qt::black);
+    painter.drawRect(QRectF(-bodyLength * 0.4f, -bodyWidth * 0.5f - wheelWidth, wheelLength, wheelWidth));
+    painter.drawRect(QRectF(-bodyLength * 0.4f, bodyWidth * 0.5f, wheelLength, wheelWidth));
+    painter.drawRect(QRectF(bodyLength * 0.2f, -bodyWidth * 0.5f - wheelWidth, wheelLength, wheelWidth));
+    painter.drawRect(QRectF(bodyLength * 0.2f, bodyWidth * 0.5f, wheelLength, wheelWidth));
+
+    // spoiler
+    painter.setBrush(QColor(30, 30, 30));
+    painter.drawRect(QRectF(-bodyLength * 0.55f, -spoilerWidth * 0.5f, spoilerLength, spoilerWidth));
+
+    painter.restore();
+}
+
+void GameWidget::drawHud(QPainter &painter, int w, int h)
+{
+    // countdown before race start
     if (countdownActive)
     {
         int secondsLeft = countdownTime - (int)(countdownTimer.elapsed() / 1000.0f);
-        if(secondsLeft < 0)
+        if (secondsLeft < 0)
         {
             secondsLeft = 0;
         }
 
         painter.setPen(Qt::white);
-        QFont countdownFont("Arial", 60, QFont::Bold);
-        painter.setFont(countdownFont);
+        painter.setFont(QFont("Arial", 60, QFont::Bold));
         painter.drawText(rect(), Qt::AlignCenter, QString::number(secondsLeft));
     }
 
+    // lap counter and current time
     if (gameRunning)
     {
-        float currentTime = lapTimer.elapsed() / 1000.f;
+        float currentTime = lapTimer.elapsed() / 1000.0f;
 
         painter.setPen(Qt::white);
-        QFont infoFont("Arial", 16, QFont::Bold);
-        painter.setFont(infoFont);
+        painter.setFont(QFont("Arial", 16, QFont::Bold));
         painter.drawText(10, 30, tr("Lap: %1 / %2").arg(currentLap + 1).arg(totalLaps));
         painter.drawText(10, 55, tr("Time: %1 s").arg(currentTime, 0, 'f', 2));
     }
 
+    // race results
     if (raceFinished)
     {
         painter.setPen(Qt::white);
-        QFont lapFont("Arial", 16);
-        painter.setFont(lapFont);
+        painter.setFont(QFont("Arial", 16));
 
         float totalTime = 0;
         for (int i = 0; i < lapTimes.size(); ++i)
@@ -222,20 +276,11 @@ void GameWidget::paintEvent(QPaintEvent *event)
         }
 
         QString totalText = tr("Total: %1 s").arg(totalTime, 0, 'f', 2);
-        QFont totalFont("Arial", 20, QFont::Bold);
-        painter.setFont(totalFont);
+        painter.setFont(QFont("Arial", 20, QFont::Bold));
         painter.drawText(w / 2 - 80, h / 2 + 40 + lapTimes.size() * 25 + 10, totalText);
     }
-
-    /*
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(QColor(255, 0, 0, 50));
-    for (const QRectF &obstacle: obstacles)
-    {
-        painter.drawRect(QRectF(obstacle.x() * w, obstacle.y() * h, obstacle.width() * w, obstacle.height() * h));
-    }
-    */
 }
+
 
 void GameWidget::updateCar(float speed, float steerAngle)
 {
@@ -245,17 +290,20 @@ void GameWidget::updateCar(float speed, float steerAngle)
 
 void GameWidget::startGame()
 {
+    // reset car
     carPosition = QPointF(0.1, 0.5);
     carAngle = -90.0f;
     carSpeed = 0.0f;
     targetSpeed = 0.0f;
+
+    // reset race state
     currentLap = 0;
     lapTimes.clear();
     raceFinished = false;
     gameRunning = false;
     countdownActive = true;
-    nextCheckpoint = 0;
 
+    // reset checkpoints
     for (int i = 0; i < checkpointsPassed.size(); ++i)
     {
         checkpointsPassed[i] = false;
@@ -268,16 +316,23 @@ void GameWidget::startGame()
 void GameWidget::resetGame()
 {
     gameTimer->stop();
+
+    // reset game state
     raceFinished = false;
     gameRunning = false;
     countdownActive = false;
+
+    // reset car
     carPosition = QPointF(0.1, 0.5);
     carAngle = -90.0f;
     carSpeed = 0.0f;
     targetSpeed = 0.0f;
+
+    // reset race data
     currentLap = 0;
     lapTimes.clear();
 
+    // reset checkpoints
     for (int i = 0; i < checkpointsPassed.size(); ++i)
     {
         checkpointsPassed[i] = false;
@@ -288,6 +343,7 @@ void GameWidget::resetGame()
 
 void GameWidget::gameTick()
 {
+    // countdown phase
     if (countdownActive)
     {
         if (countdownTimer.elapsed() >= countdownTime * 1000)
@@ -306,12 +362,14 @@ void GameWidget::gameTick()
         return;
     }
 
+    // determine speed by mapping controller distance to target speed
     targetSpeed = (1.0f - (lastSpeed / 500.0f)) * maxSpeed;
     if (targetSpeed < 0)
     {
         targetSpeed = 0;
     }
 
+    // reduce max speed on grass
     float actualMaxSpeed;
     if (onTrack)
     {
@@ -327,11 +385,14 @@ void GameWidget::gameTick()
         targetSpeed = actualMaxSpeed;
     }
 
+    // smooth acceleration
     carSpeed += (targetSpeed - carSpeed) * accelerationFactor;
 
+    // controller angle determines car orientation
     float steerAmount = lastSteerAngle * turnRate;
     carAngle += steerAmount;
 
+    // move forward in current direction
     float angleRad = carAngle * M_PI / 180.0f;
     float dx = cos(angleRad) * carSpeed;
     float dy = sin(angleRad) * carSpeed;
@@ -340,9 +401,11 @@ void GameWidget::gameTick()
     carPosition.setX(carPosition.x() + dx);
     carPosition.setY(carPosition.y() + dy);
 
+    // window boundaries
     carPosition.setX(qBound((double)borderMargin, carPosition.x(), 1.0 - (double)borderMargin));
     carPosition.setY(qBound((double)borderMargin, carPosition.y(), 1.0 - (double)borderMargin));
 
+    // obstacle collision
     for (const QRectF &obstacle: obstacles)
     {
         if (obstacle.contains(carPosition))
@@ -353,23 +416,25 @@ void GameWidget::gameTick()
         }
     }
 
+    // track detection
     onTrack = trackArea.contains(carPosition);
 
+    // checkpoint detection
     QLineF moveLine(previousPosition, carPosition);
-    QPointF checkpointIntersection;
+    QPointF intersection;
+
     for (int i = 0; i < checkpoints.size(); ++i)
     {
-        if (!checkpointsPassed[i] && (moveLine.intersects(checkpoints[i], &checkpointIntersection) == QLineF::BoundedIntersection))
+        if (!checkpointsPassed[i] && (moveLine.intersects(checkpoints[i], &intersection) == QLineF::BoundedIntersection))
         {
             checkpointsPassed[i] = true;
         }
     }
 
     QLineF startLine(startLineBeginning, startLineEnd);
-    QPointF startIntersection;
-    bool allCheckpointsPassed = true;
-    if (allCheckpointsPassed && (moveLine.intersects(startLine, &startIntersection) == QLineF::BoundedIntersection))
+    if (moveLine.intersects(startLine, &intersection) == QLineF::BoundedIntersection)
     {
+        bool allCheckpointsPassed;
         for (int i = 0; i < checkpointsPassed.size(); ++i)
         {
             if (!checkpointsPassed[i])

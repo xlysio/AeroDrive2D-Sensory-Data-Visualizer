@@ -9,18 +9,21 @@ ChartWidget::ChartWidget(const QString &chartName, const QString &yAxisName,floa
 {
     timeWindow = 5.0f;
 
+    // chart configuration
     chart = new QChart();
     chart->setTitle(chartName);
     chart->setAnimationOptions(QChart::NoAnimation);
     chart->legend()->setVisible(true);
     chart->legend()->setAlignment(Qt::AlignBottom);
 
+    // time axis
     xAxis = new QValueAxis();
     xAxis->setTitleText("t [s]");
     xAxis->setMin(0);
     xAxis->setMax(timeWindow);
     chart->addAxis(xAxis, Qt::AlignBottom);
 
+    // value axis
     yAxis = new QValueAxis();
     yAxis->setTitleText(yAxisName);
     yAxis->setMin(yMin);
@@ -41,6 +44,7 @@ void ChartWidget::addPoint(int seriesIndex, float value)
     float time = elapsedTimer.elapsed() / 1000.0f;
     seriesList[seriesIndex]->append(time, value);
 
+    // remove all points outside the visible time window
     QList<QPointF> points = seriesList[seriesIndex]->points();
     while(points.size() > 0 && points.first().x() < time - timeWindow)
     {
@@ -48,6 +52,7 @@ void ChartWidget::addPoint(int seriesIndex, float value)
     }
     seriesList[seriesIndex]->replace(points);
 
+    // scroll the time axis
     if (time > timeWindow)
     {
         xAxis->setRange(time - timeWindow, time);

@@ -39,7 +39,7 @@ class MainWindow : public QMainWindow
 public:
     /**
      * @brief Constructs the main window and initializes all child widgets.
-     * @param parent Optional parent widget.
+     * @param parent - Optional parent widget.
      */
     explicit MainWindow(QWidget *parent = nullptr);
 
@@ -100,6 +100,11 @@ private:
     bool buttonChartsStopResumeState;
 
     /**
+     * @brief Handler for serial port communication with the controller.
+     */
+    SerialHandler *serialHandler;
+
+    /**
      * @brief Button to connect or disconnect the serial port.
      */
     QPushButton *buttonSerialConnectDisconnect;
@@ -108,11 +113,6 @@ private:
      * @brief Flag to track the current state of the Connect/Disconnect button.
      */
     bool buttonSerialConnectDisconnectState;
-
-    /**
-     * @brief Handler for serial port communication with the controller.
-     */
-    SerialHandler *serialHandler;
 
     /**
      * @brief Button for switching language to english.
@@ -129,6 +129,9 @@ private:
      */
     QTranslator *translator;
 
+    /**
+     * @brief Updates all visible strings to reflect the current language.
+     */
     void retranslateUi();
 
 private slots:
@@ -168,25 +171,25 @@ private slots:
      *
      * Distributes the received values to the charts unless chart updates are paused.
      *
-     * @param measuredDist Distance measurement from distance sensor [mm].
-     * @param realDist Compensated distance [mm].
-     * @param accDeg Roll angle computed from accelerometer [degrees].
-     * @param gyroDeg Roll angle integrated from gyroscope [degrees].
-     * @param angleDeg Roll angle after complementary filter [degrees].
+     * @param measuredDist - Raw distance measurement from distance sensor [mm].
+     * @param realDist - Compensated distance [mm].
+     * @param accDeg - Roll angle computed from accelerometer [degrees].
+     * @param gyroDeg - Roll angle integrated from gyroscope [degrees].
+     * @param angleDeg - Roll angle after complementary filter [degrees].
      */
     void onSerialDataReceived(float measuredDist, float realDist, float accDeg, float gyroDeg, float angleDeg);
 
     /**
-     * @brief Slot that triggers when the button with british flag is cliked.
+     * @brief Slot that triggers when the button with British flag is cliked.
      *
-     * Switches the language to english.
+     * Switches the language to English. Removes the active translator, reverting all tr() strings to English.
      */
     void switchToEnglish();
 
     /**
-     * @brief Slot that triggers when the button with polish flag is cliked.
+     * @brief Slot that triggers when the button with Polish flag is cliked.
      *
-     * Switches the language to english.
+     * Switches the language to Polish. Loads the Polish translation file from the application directory.
      */
     void switchToPolish();
 

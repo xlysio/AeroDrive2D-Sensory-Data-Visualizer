@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include <QDebug>
 #include <QCoreApplication>
+#include <QIcon>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 {
@@ -45,12 +46,14 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     QHBoxLayout *layoutFlags = new QHBoxLayout();
 
     buttonLanguageEnglish = new QToolButton(this);
-    buttonLanguageEnglish->setText("ENG");
-    buttonLanguageEnglish->setFixedSize(40,30);
+    buttonLanguageEnglish->setIcon(QIcon(":/resources/flag_british.png"));
+    buttonLanguageEnglish->setIconSize(QSize(48, 30));
+    buttonLanguageEnglish->setFixedSize(48, 30);
 
     buttonLanguagePolish = new QToolButton(this);
-    buttonLanguagePolish->setText("PL");
-    buttonLanguagePolish->setFixedSize(40,30);
+    buttonLanguagePolish->setIcon(QIcon(":/resources/flag_polish.png"));
+    buttonLanguagePolish->setIconSize(QSize(48, 30));
+    buttonLanguagePolish->setFixedSize(48, 30);
 
     layoutFlags->addStretch();
     layoutFlags->addWidget(buttonLanguageEnglish);

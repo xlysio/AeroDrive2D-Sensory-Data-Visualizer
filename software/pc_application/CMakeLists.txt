@@ -18,6 +18,13 @@ qt_add_executable(pc_application
     gamewidget.cpp
 )
 
+qt_add_resources(pc_application "flags"
+    PREFIX "/"
+    FILES
+        resources/flag_british.png
+        resources/flag_polish.png
+)
+
 qt_add_translations(pc_application
     TS_FILES
         translations/app_en.ts

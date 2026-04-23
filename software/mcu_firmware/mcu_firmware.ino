@@ -3,8 +3,6 @@
 #include <math.h>
 #include <avr/dtostrf.h>
 
-#define BUFF_SIZE 10
-
 // For NANO 33 IoT:
 // - VIN to VIN
 // - GND to GND
@@ -23,12 +21,14 @@ Adafruit_VL53L0X sensor = Adafruit_VL53L0X();
 float acc_x, acc_y, acc_z, gyro_x, gyro_y, gyro_z, dt, acc_deg, acc_rad, gyro_deg, real_distance;
 float angle_deg = 0.0;
 float angle_rad = 0.0;
+uint16_t measured_distance;
+VL53L0X_RangingMeasurementData_t measure;
 unsigned long current_time = 0;
 unsigned long previous_time = 0;
-uint16_t measured_distance;
 const float alpha = 0.96;
-VL53L0X_RangingMeasurementData_t measure;
-char output[BUFF_SIZE];
+char buf[10];
+char frame[100];
+int position;
 
 void setup() 
 {
@@ -89,14 +89,30 @@ void loop()
     real_distance = 500.0;
   }
   
-  Serial.print("$AD,");
-  Serial.print(measured_distance);
-  Serial.print(",");
-  Serial.print(dtostrf(real_distance, 1, 2, output));
-  Serial.print(",");
-  Serial.print(dtostrf(acc_deg, 1, 2, output));
-  Serial.print(",");
-  Serial.print(dtostrf(gyro_deg, 1, 2, output));
-  Serial.print(",");
-  Serial.println(dtostrf(angle_deg, 1, 2, output));
+  position = 0;
+
+  position += snprintf(frame + position, sizeof(frame) - position, "AD,%d,", measured_distance);
+  dtostrf(real_distance, 1, 2, buf);
+  position += snprintf(frame + position, sizeof(frame) - position, "%s,", buf);
+  dtostrf(acc_deg, 1, 2, buf);
+  position += snprintf(frame + position, sizeof(frame) - position, "%s,", buf);
+  dtostrf(gyro_deg, 1, 2, buf);
+  position += snprintf(frame + position, sizeof(frame) - position, "%s,", buf);
+  dtostrf(angle_deg, 1, 2, buf);
+  position += snprintf(frame + position, sizeof(frame) - position, "%s", buf);
+
+  int checksum = 0;
+  for (int i = 0; i < position; ++i)
+  {
+    checksum ^= frame[i];
+  }
+
+  Serial.print("$");
+  Serial.print(frame);
+  Serial.print("*");
+  if (checksum < 0x10)
+  {
+    Serial.print("0");
+  }
+  Serial.println(checksum, HEX);
 }

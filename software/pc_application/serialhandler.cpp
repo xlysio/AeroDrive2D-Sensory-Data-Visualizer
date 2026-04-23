@@ -8,7 +8,7 @@ SerialHandler::SerialHandler(QObject *parent): QObject(parent)
 {
     serial = new QSerialPort(this);
 
-    // port configuration mathching the microcontoller settings
+    // port configuration matching the microcontroller settings
     serial->setBaudRate(QSerialPort::Baud115200);
     serial->setDataBits(QSerialPort::Data8);
     serial->setParity(QSerialPort::NoParity);
@@ -53,14 +53,45 @@ void SerialHandler::onDataReady()
         QString line = QString::fromUtf8(serial->readLine()).trimmed();
 
         // check frame prefix
-        if (!line.startsWith("$AD,"))
+        if (!line.startsWith("$"))
+        {
+            continue;
+        }
+
+        // find checksum separator
+        int starIndex = line.lastIndexOf("*");
+        if (starIndex == -1)
+        {
+            continue;
+        }
+
+        // extract payload and checksum from serial data
+        QString payload = line.mid(1, starIndex - 1);
+        QString checksumStr = line.mid(starIndex + 1);
+
+        int computed = 0;
+        for (int i = 0; i < payload.size(); ++i)
+        {
+            computed ^= payload.at(i).toLatin1();
+        }
+
+        // compare computed checksum with received checksum
+        bool checksumOk;
+        int received = checksumStr.toInt(&checksumOk, 16);
+        if(!checksumOk || computed != received)
+        {
+            continue;
+        }
+
+        // check frame type prefix
+        if (!payload.startsWith("AD,"))
         {
             continue;
         }
 
         // remove prefix and split into fields
-        line = line.mid(4);
-        QStringList data = line.split(",");
+        payload = payload.mid(3);
+        QStringList data = payload.split(",");
 
         // validate amount of fields
         if (data.size() != 5)

@@ -114,3 +114,14 @@ void SerialHandler::onDataReady()
         }
     }
 }
+
+QStringList SerialHandler::availablePorts()
+{
+    QStringList portNames;
+    for (const QSerialPortInfo &info: QSerialPortInfo::availablePorts())
+    {
+        portNames.append(info.portName());
+    }
+
+    return portNames;
+}

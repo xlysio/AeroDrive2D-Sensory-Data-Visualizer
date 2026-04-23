@@ -96,18 +96,28 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     layoutCharts->addLayout(layoutAngleCheckboxes);
 
     // chart control buttons
+    QHBoxLayout *layoutButtons = new QHBoxLayout();
     QHBoxLayout *layoutChartsButtons = new QHBoxLayout();
 
     buttonChartsClear = new QPushButton(tr("Clear"), this);
     buttonChartsStopResume = new QPushButton(tr("Stop"), this);
     buttonChartsStopResumeState = false;
 
-    buttonSerialConnectDisconnect = new QPushButton(tr("Connect"), this);
-
     layoutChartsButtons->addWidget(buttonChartsClear);
     layoutChartsButtons->addWidget(buttonChartsStopResume);
-    layoutChartsButtons->addWidget(buttonSerialConnectDisconnect);
-    layoutCharts->addLayout(layoutChartsButtons);
+    layoutButtons->addLayout(layoutChartsButtons);
+
+    // serial connection button and combobox
+    QHBoxLayout *layoutSerial = new QHBoxLayout();
+
+    comboSerialPorts = new QComboBox(this);
+    comboSerialPorts->addItems(serialHandler->availablePorts());
+    buttonSerialConnectDisconnect = new QPushButton(tr("Connect"), this);
+
+    layoutSerial->addWidget(comboSerialPorts);
+    layoutSerial->addWidget(buttonSerialConnectDisconnect);
+    layoutButtons->addLayout(layoutSerial);
+    layoutCharts->addLayout(layoutButtons);
 
     layoutWindow->addLayout(layoutCharts);
 
@@ -171,13 +181,25 @@ void MainWindow::onSerialConnectDisconnectClicked()
     {
         serialHandler->closePort();
         buttonSerialConnectDisconnect->setText(tr("Connect"));
+        comboSerialPorts->setEnabled(true);
+        comboSerialPorts->clear();
+        comboSerialPorts->addItems(serialHandler->availablePorts());
         buttonSerialConnectDisconnectState = false;
     }
     else
     {
-        if (serialHandler->openPort("/dev/ttyACM0"))
+        // refresh port list before connecting
+        QString selectedPort = comboSerialPorts->currentText();
+
+        if (selectedPort.isEmpty())
+        {
+            return;
+        }
+
+        if (serialHandler->openPort(selectedPort))
         {
             buttonSerialConnectDisconnect->setText(tr("Disconnect"));
+            comboSerialPorts->setEnabled(false);
             buttonSerialConnectDisconnectState = true;
         }
     }

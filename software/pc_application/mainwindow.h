@@ -17,6 +17,7 @@
 #include <QWidget>
 #include <QTranslator>
 #include <QToolButton>
+#include <QComboBox>
 
 #include "serialhandler.h"
 #include "chartwidget.h"
@@ -113,6 +114,11 @@ private:
      * @brief Flag to track the current state of the Connect/Disconnect button.
      */
     bool buttonSerialConnectDisconnectState;
+
+    /**
+     * @brief Shows all available serial ports and allows to choose one of them.
+     */
+    QComboBox *comboSerialPorts;
 
     /**
      * @brief Button for switching language to english.

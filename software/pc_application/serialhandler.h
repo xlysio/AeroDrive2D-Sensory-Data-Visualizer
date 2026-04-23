@@ -52,6 +52,12 @@ public:
      */
     bool closePort();
 
+    /**
+     * @brief Provides a list with available serial ports.
+     * @return portNames - list with available serial ports.
+     */
+    QStringList availablePorts();
+
 private:
     /**
      *  @brief QSerialPort instance used for communication.

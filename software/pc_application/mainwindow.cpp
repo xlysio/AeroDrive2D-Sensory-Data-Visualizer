@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 
     // left side - game
     QVBoxLayout *layoutGame = new QVBoxLayout();
+    QHBoxLayout *layoutGameButton = new QHBoxLayout();
 
     gameWidget = new GameWidget(this);
 
@@ -36,7 +37,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     buttonGameStartRestartState = false;
 
     layoutGame->addWidget(gameWidget);
-    layoutGame->addWidget(buttonGameStartRestart);
+    layoutGameButton->addStretch(1);
+    layoutGameButton->addWidget(buttonGameStartRestart, 1);
+    layoutGameButton->addStretch(1);
+    layoutGame->addLayout(layoutGameButton);
     layoutWindow->addLayout(layoutGame);
 
     // right side - charts

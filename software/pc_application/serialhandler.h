@@ -18,7 +18,7 @@
  *
  * The controller sends text frames at 50 Hz in the format:
  * @code
- * $AD,<measured_dist>,<compensated_dist>,<acc_deg>,<gyro_deg>,<angle_deg>\n
+ * $AD,<measured_dist>,<compensated_dist>,<acc_deg>,<gyro_deg>,<angle_deg>*<XX>\n
  * @endcode
  * SerialHandler opens the serial port, buffers incoming bytes until a full line is available, validates the frame prefix,
  * converts each field to a float, and emits the dataReceived() signal with theparsed values.

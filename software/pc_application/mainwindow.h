@@ -40,7 +40,7 @@ class MainWindow : public QMainWindow
 public:
     /**
      * @brief Constructs the main window and initializes all child widgets.
-     * @param parent - Optional parent widget.
+     * @param[in,out] parent - Optional parent widget.
      */
     explicit MainWindow(QWidget *parent = nullptr);
 
@@ -177,11 +177,11 @@ private slots:
      *
      * Distributes the received values to the charts unless chart updates are paused.
      *
-     * @param measuredDist - Raw distance measurement from distance sensor [mm].
-     * @param realDist - Compensated distance [mm].
-     * @param accDeg - Roll angle computed from accelerometer [degrees].
-     * @param gyroDeg - Roll angle integrated from gyroscope [degrees].
-     * @param angleDeg - Roll angle after complementary filter [degrees].
+     * @param[in] measuredDist -- Raw distance measurement from distance sensor [mm].
+     * @param[in] realDist -- Compensated distance [mm].
+     * @param[in] accDeg -- Roll angle computed from accelerometer [degrees].
+     * @param[in] gyroDeg -- Roll angle integrated from gyroscope [degrees].
+     * @param[in] angleDeg -- Roll angle after complementary filter [degrees].
      */
     void onSerialDataReceived(float measuredDist, float realDist, float accDeg, float gyroDeg, float angleDeg);
 

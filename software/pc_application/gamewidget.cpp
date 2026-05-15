@@ -13,19 +13,19 @@ GameWidget::GameWidget(QWidget *parent): QWidget{parent}
     carPosition = QPointF(0.1, 0.5);
     carAngle = -90.0f;
     carSpeed = 0.0f;
-    carSize = 0.05f;
+    carSize = 0.04f;
     targetSpeed = 0.0f;
     onTrack = true;
 
     // physics coefficients
-    accelerationFactor = 0.01f;
-    maxSpeed = 0.01f;
-    turnRate = 0.05f;
-    grassSpeedFactor = 0.3f;
+    accelerationFactor = 0.003f;
+    maxSpeed = 0.009f;
+    turnRate = 0.07f;
+    grassSpeedFactor = 0.25f;
     borderMargin = 0.04f;
 
     // game state
-    totalLaps = 5;
+    totalLaps = 4;
     currentLap = 0;
     gameRunning = false;
     countdownActive = false;

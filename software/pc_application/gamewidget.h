@@ -33,7 +33,7 @@ class GameWidget : public QWidget
 public:
     /**
      * @brief Constructs the game widget, builds the track, and initializes all state flags.
-     * @param parent - Optional parent widget.
+     * @param[in,out] parent -- Optional parent widget.
      */
     explicit GameWidget(QWidget *parent = nullptr);
 
@@ -44,8 +44,8 @@ public:
 
     /**
      * @brief Receives controller input to be applied in the next game tick.
-     * @param speed - Compensated distance from ToF sensor [mm].
-     * @param steerAngle - Roll angle after complementary filter [degrees].
+     * @param[in] speed -- Compensated distance from ToF sensor [mm].
+     * @param[in] steerAngle -- Roll angle after complementary filter [degrees].
      */
     void updateCar(float speed, float steerAngle);
 

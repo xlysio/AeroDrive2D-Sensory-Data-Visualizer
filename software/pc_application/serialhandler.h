@@ -30,7 +30,7 @@ class SerialHandler: public QObject
 public:
     /**
      * @brief Constructs the SerialHandler and configures port parameters.
-     * @param parent - Optional parent QObject.
+     * @param[in,out] parent -- Optional parent QObject.
      */
     SerialHandler(QObject *parent = nullptr);
 
@@ -41,7 +41,7 @@ public:
 
     /**
      * @brief Opens the serial port for reading.
-     * @param portName - System name of the port.
+     * @param[in] portName -- System name of the port.
      * @return true if the port was opened successfully, false if not.
      */
     bool openPort(const QString &portName);
@@ -54,7 +54,7 @@ public:
 
     /**
      * @brief Provides a list with available serial ports.
-     * @return portNames - list with available serial ports.
+     * @return portNames -- list with available serial ports.
      */
     QStringList availablePorts();
 
@@ -76,11 +76,11 @@ private slots:
 signals:
     /**
      * @brief Emitted when a valid sensor data frame has been parsed.
-     * @param measuredDist - Raw distance measurement from distance sensor [mm].
-     * @param realDist - Compensated distance [mm].
-     * @param accDeg - Roll angle computed from accelerometer [degrees].
-     * @param gyroDeg - Roll angle integrated from gyroscope [degrees].
-     * @param angleDeg - Roll angle after complementary filter [degrees].
+     * @param[in] measuredDist -- Raw distance measurement from distance sensor [mm].
+     * @param[in] realDist -- Compensated distance [mm].
+     * @param[in] accDeg -- Roll angle computed from accelerometer [degrees].
+     * @param[in] gyroDeg -- Roll angle integrated from gyroscope [degrees].
+     * @param[in] angleDeg -- Roll angle after complementary filter [degrees].
      */
     void dataReceived(float measuredDist, float realDist, float accDeg, float gyroDeg, float angleDeg);
 

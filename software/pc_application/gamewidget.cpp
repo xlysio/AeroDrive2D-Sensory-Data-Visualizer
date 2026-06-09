@@ -25,7 +25,7 @@ GameWidget::GameWidget(QWidget *parent): QWidget{parent}
     borderMargin = 0.04f;
 
     // game state
-    totalLaps = 4;
+    totalLaps = 2;
     currentLap = 0;
     gameRunning = false;
     countdownActive = false;
@@ -264,20 +264,41 @@ void GameWidget::drawHud(QPainter &painter, int w, int h)
     // race results
     if (raceFinished)
     {
-        painter.setPen(Qt::white);
         painter.setFont(QFont("Arial", 16));
+        QFontMetrics fm(painter.font());
 
         float totalTime = 0;
         for (int i = 0; i < lapTimes.size(); ++i)
         {
             totalTime += lapTimes[i];
-            QString lapText = tr("Lap %1: %2 s").arg(i + 1).arg(lapTimes[i], 0, 'f', 2);
-            painter.drawText(w / 2 - 80, h / 2 + 40 + i * 25, lapText);
+
+            QString labelText = tr("Lap %1: ").arg(i + 1);
+            QString timeText = tr("%1 s").arg(lapTimes[i], 0, 'f', 2);
+
+            int x = w / 2 - 80;
+            int y = h / 2 + 40 + i * 25;
+
+            painter.setPen(Qt::white);
+            painter.drawText(x, y, labelText);
+
+            painter.setPen(Qt::yellow);
+            painter.drawText(x + fm.horizontalAdvance(labelText), y, timeText);
         }
 
-        QString totalText = tr("Total: %1 s").arg(totalTime, 0, 'f', 2);
         painter.setFont(QFont("Arial", 20, QFont::Bold));
-        painter.drawText(w / 2 - 80, h / 2 + 40 + lapTimes.size() * 25 + 10, totalText);
+        QFontMetrics fmBold(painter.font());
+
+        QString totalLabel = tr("Total: ");
+        QString totalValue = tr("%1 s").arg(totalTime, 0, 'f', 2);
+
+        int xTotal = w / 2 - 80;
+        int yTotal = h / 2 + 40 + lapTimes.size() * 25 + 10;
+
+        painter.setPen(Qt::white);
+        painter.drawText(xTotal, yTotal, totalLabel);
+
+        painter.setPen(Qt::yellow);
+        painter.drawText(xTotal + fmBold.horizontalAdvance(totalLabel), yTotal, totalValue);
     }
 }
 

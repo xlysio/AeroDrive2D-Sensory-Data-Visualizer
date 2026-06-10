@@ -62,38 +62,56 @@ public:
 protected:
     /**
      * @brief Renders the entire game scene.
-     * @param[in]
+     * @param[in] event -- QPaintEvent object.
      */
     void paintEvent(QPaintEvent *event) override;
 
 private:
     /**
      * @brief Draws the grass background.
+     * @param[in] painter -- QPainter object.
+     * @param[in] w -- X axis position of painter.
+     * @param[in] h -- Y axis position of painter.
      */
     void drawBackground(QPainter &painter, int w, int h);
 
     /**
      * @brief Draws the asphalt track and the start/finish line.
+     * @param[in] painter -- QPainter object.
+     * @param[in] w -- X axis position of painter.
+     * @param[in] h -- Y axis position of painter.
      */
     void drawTrack(QPainter &painter, int w, int h);
 
     /**
      * @brief Draws scenery elements (trees, stands).
+     * @param[in] painter -- QPainter object.
+     * @param[in] w -- X axis position of painter.
+     * @param[in] h -- Y axis position of painter.
      */
     void drawScenery(QPainter &painter, int w, int h);
 
     /**
      * @brief Draws checkpoint lines on the track.
+     * @param[in] painter -- QPainter object.
+     * @param[in] w -- X axis position of painter.
+     * @param[in] h -- Y axis position of painter.
      */
     void drawCheckpoints(QPainter &painter, int w, int h);
 
     /**
      * @brief Draws the racing car (body, nose, wheels, spoiler).
+     * @param[in] painter -- QPainter object.
+     * @param[in] w -- X axis position of painter.
+     * @param[in] h -- Y axis position of painter.
      */
     void drawCar(QPainter &painter, int w, int h);
 
     /**
      * @brief Draws the hud (countdown, lap info, race results).
+     * @param[in] painter -- QPainter object.
+     * @param[in] w -- X axis position of painter.
+     * @param[in] h -- Y axis position of painter.
      */
     void drawHud(QPainter &painter, int w, int h);
 

@@ -18,10 +18,10 @@ GameWidget::GameWidget(QWidget *parent): QWidget{parent}
     onTrack = true;
 
     // physics coefficients
-    accelerationFactor = 0.003f;
-    maxSpeed = 0.009f;
+    accelerationFactor = 0.004f;
+    maxSpeed = 0.01f;
     turnRate = 0.07f;
-    grassSpeedFactor = 0.25f;
+    grassSpeedFactor = 0.15f;
     borderMargin = 0.04f;
 
     // game state

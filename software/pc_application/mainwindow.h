@@ -33,7 +33,7 @@
  *
  * MainWindow receives sensor data from SerialHandler and distributes to the chart widgets for visualization.
  */
-class MainWindow : public QMainWindow
+class MainWindow: public QMainWindow
 {
     Q_OBJECT
 

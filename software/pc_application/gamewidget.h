@@ -62,6 +62,7 @@ public:
 protected:
     /**
      * @brief Renders the entire game scene.
+     * @param[in]
      */
     void paintEvent(QPaintEvent *event) override;
 

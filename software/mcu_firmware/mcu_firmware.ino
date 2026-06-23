@@ -4,10 +4,10 @@
 #include <avr/dtostrf.h>
 
 // For NANO 33 IoT:
-// - VIN to VIN
-// - GND to GND
-// - SDA to A4
-// - SCL to A5
+// - VIN to VIN (red)
+// - GND to GND (black)
+// - SDA to A4 (white)
+// - SCL to A5 (brown)
 
 // gyro - x axis
 // left - minus
